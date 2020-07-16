@@ -1,0 +1,91 @@
+name: schedule
+version: "0.1"
+author: Max Levine <max@maxlevine.co.uk>
+about: Creates a schedule
+args:
+    - tasks:
+        short: t
+        long: tasks
+        value_name: FILE
+        help: Sets a custom tasks file
+        takes_value: true
+        default_value: tasks.yml
+    - verbose:
+        short: v
+        multiple: true
+        help: Sets the level of verbosity
+subcommands:
+    - list:
+        about: lists sets of tasks
+        version: "0.1"
+        author: Max Levine <max@maxlevine.co.uk>
+        args:
+            - TYPE:
+                help: Specifies a task set type to filter by.
+                required: false
+                index: 1
+                possible_values:
+                    - required
+                    - optional
+                    - completed
+                    - incompleted
+                    - all
+                default_value: all
+    - add:
+        about: add a new task
+        version: "0.1"
+        author: Max Levine <max@maxlevine.co.uk>
+        args:
+            - TASK:
+                help: A name for the new task
+                required: true
+                index: 1
+            - duration:
+                short: d
+                long: duration
+                help: Specifies the default duration of a unit of the activity in minutes.
+                default_value: "60"
+                value_name: INTEGER
+                takes_value: true
+            - required:
+                short: r
+                long: required
+                help: Make this task required (default optional)
+                takes_value: false
+    - complete:
+        about: report a task as completed
+        version: "0.1"
+        author: Max Levine <max@maxlevine.co.uk>
+        args:
+            - TASK:
+                help: Name of completed task
+                required: true
+                index: 1
+            - duration:
+                short: d
+                long: duration
+                help: Specifies the duration of the activity in minutes
+                value_name: INTEGER
+                takes_value: true
+    - choose:
+        about: choose task
+        version: "0.1"
+        author: Max Levine <max@maxlevine.co.uk>
+        args:
+            - TYPE:
+                help: Specifies a task set type to filter by.
+                required: false
+                index: 1
+                possible_values:
+                    - required
+                    - optional
+                    - all
+                default_value: all
+    - test:
+        about: controls testing features
+        version: "1.3"
+        author: Max Levine <max@maxlevine.co.uk>
+        args: 
+            - debug:
+                short: d
+                help: print debug information
