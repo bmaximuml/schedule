@@ -20,22 +20,8 @@ fn main() {
     let tasks = matches.value_of("tasks").unwrap_or("tasks.yml");
     println!("Value for tasks file: {}", tasks);
     let tasks: HashMap<String, Task> = load_tasks(tasks);
-
-    for (name, task) in &tasks {
-        println!("{}:", name);
-        println!("    duration: {}", task.duration.to_string());
-        match task.required {
-            true => println!("    type: required"),
-            false => println!("    type: optional"),
-        }
-        if &task.completed.len() > &0 {
-            println!("    completed:");
-        }
-        for completed in &task.completed {
-            println!("        timestamp: {}", completed.timestamp);
-            println!("        duration: {}", completed.duration);
-        }
-    }
+    
+    println!("{:#?}", tasks);
 
     // println!("{:?}", tasks["tasks"]["reading"]["type"].as_str().unwrap());
 
