@@ -4,11 +4,13 @@ use std::collections::HashMap;
 extern crate yaml_rust;
 use yaml_rust::{YamlLoader, Yaml};
 
+#[derive(Debug)]
 pub struct TaskCompleted {
     pub timestamp: i64,
     pub duration: i64,
 }
 
+#[derive(Debug)]
 pub struct Task {
     pub duration: i64,
     pub required: bool, // true for required, false for optional
