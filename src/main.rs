@@ -13,20 +13,12 @@ fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
-    // Gets a value for config if supplied by user, or defaults to "default.conf"
-    // let config = matches.value_of("config").unwrap_or("default.conf");
-    // println!("Value for config: {}", config);
-
     // Gets a value for tasks file if supplied by user, or defaults to "tasks.yml"
     let tasks = matches.value_of("tasks").unwrap_or("tasks.yml");
     println!("Value for tasks file: {}", tasks);
 
-    // Calling .unwrap() is safe here because "INPUT" is required (if "INPUT" wasn't)
-    // required we could have used an 'if let' to conditionally get the value ()
-    // println!("Using input file {}", matches.value_of("INPUT").unwrap());
-
     // Vary the output based on how many times the user used the "verbose" flag
-    // (i.e. 'myprog -v -v -v' or 'myprog -vvv' vs 'myprog -v')
+    // (i.e. 'schedule -v -v -v' or 'schedule -vvv' vs 'schedule -v')
     match matches.occurrences_of("v") {
         0 => println!("No verbose info"),
         1 => println!("Some verbose info"),
@@ -99,17 +91,4 @@ fn main() {
             "all" | _ => println!("Choosing a task..."),
         }
     }
-
-    // let args: Vec<String> = env::args().collect();
-
-    // let config = Config::new(&args).unwrap_or_else(|err| {
-    //     println!("Problem parsing arguments {}", err);
-    //     process::exit(1);
-    // });
-
-    // if let Err(e) = schedule::run(config) {
-    //     println!("Application error: {}", e);
-
-    //     process::exit(1);
-    // }
 }
