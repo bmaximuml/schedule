@@ -83,7 +83,7 @@ subcommands:
                 default_value: all
     - test:
         about: controls testing features
-        version: "1.3"
+        version: "0.1"
         author: Max Levine <max@maxlevine.co.uk>
         args: 
             - debug:
