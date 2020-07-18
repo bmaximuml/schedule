@@ -21,12 +21,14 @@ fn main() {
 
     // Gets a value for tasks file if supplied by user, or defaults to "tasks.yml"
     let tasks_file: &str = matches.value_of("tasks").unwrap_or("tasks.yml");
-    let tasks: HashMap<String, Task> = load_tasks(tasks_file);
+    // let tasks: HashMap<String, Task> = load_tasks(tasks_file);
 
-    if matches.occurrences_of("v") > 0 {
-        println!("Value for tasks file: {}", tasks_file);
-        println!("{:#?}", tasks);
-    }
+    // if matches.occurrences_of("v") > 0 {
+    //     println!("Value for tasks file: {}", tasks_file);
+    //     println!("{:#?}", tasks);
+    // }
+
+    schedule::load_yaml_serde(tasks_file);
 
 
     // println!("{:?}", tasks["tasks"]["reading"]["type"].as_str().unwrap());
@@ -56,14 +58,14 @@ fn main() {
         let matches = matches.value_of("TYPE").unwrap_or("all");
         // List different amounts of below data based on verbosity
         // When listing tasks, include number of completions | days since started | last completed | default duration | average duration
-        list_tasks(&tasks, &matches);
-        // match matches {
-        //     "required" => println!("Listing required tasks..."),
-        //     "optional" => println!("Listing optional tasks..."),
-        //     "incompleted" => println!("Listing incompleted tasks..."),
-        //     "completed" => println!("Listing completed tasks..."),
-        //     "all" | _ => println!("Listing all tasks..."),
-        // }
+        // list_tasks(&tasks, &matches);
+        match matches {
+            "required" => println!("Listing required tasks..."),
+            "optional" => println!("Listing optional tasks..."),
+            "incompleted" => println!("Listing incompleted tasks..."),
+            "completed" => println!("Listing completed tasks..."),
+            "all" | _ => println!("Listing all tasks..."),
+        }
     } else if let Some(matches) = matches.subcommand_matches("add") {
         let task = matches.value_of("TASK").unwrap();
         // When listing tasks, include number of completions | days since started | last completed
