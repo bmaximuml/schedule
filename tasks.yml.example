@@ -1,0 +1,29 @@
+tasks:
+    reading:
+        duration: 60
+        required: true
+        completed:
+    moisturise:
+        duration: 5
+        required: true
+        completed:
+    spanish:
+        duration: 15
+        required: true
+        completed:
+    walk:
+        duration: 60
+        required: false
+        completed:
+    run:
+        duration: 60
+        required: false
+        completed:
+    table_tennis:
+        duration: 20
+        required: false
+        completed:
+            - timestamp: 1594846800
+              duration: 20
+            - timestamp: 1594818000
+              duration: 60
