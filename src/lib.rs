@@ -1,20 +1,28 @@
 use std::fs;
 use std::collections::HashMap;
+// use std::collections::BTreeMap;
 
 extern crate yaml_rust;
 use yaml_rust::{YamlLoader, Yaml};
 
-#[derive(Debug)]
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TaskCompleted {
     pub timestamp: i64,
     pub duration: i64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Task {
     pub duration: i64,
     pub required: bool, // true for required, false for optional
-    pub completed: Vec<TaskCompleted>
+    pub completed: Vec<TaskCompleted>,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct TaskYaml {
+    pub tasks: HashMap<String, Task>,
 }
 
 fn load_yaml(file: &str) -> Vec<Yaml> {
@@ -71,4 +79,14 @@ pub fn load_tasks(file: &str) -> HashMap<String, Task> {
     }
 
     all_tasks
+}
+
+pub fn load_yaml_serde(file: &str) {
+    let yaml_str = match fs::read_to_string(file) {
+        Ok(data) => data,
+        Err(_) => panic!("Unable to read file: {}", &file),
+    };
+
+    let deserialized_map: TaskYaml = serde_yaml::from_str(&yaml_str).unwrap();
+    println!("{:#?}", deserialized_map);
 }
