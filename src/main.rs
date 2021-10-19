@@ -6,7 +6,8 @@ use clap::{App, load_yaml};
 extern crate chrono;
 use chrono::{Datelike, Timelike, Local, DateTime};
 
-use schedule::{Task, load_tasks};
+// use schedule::{Task, TaskYaml, load_tasks};
+use schedule::{Task, TaskYaml};
 
 mod list;
 use crate::list::list_tasks;
@@ -28,7 +29,8 @@ fn main() {
     //     println!("{:#?}", tasks);
     // }
 
-    schedule::load_yaml_serde(tasks_file);
+    let tasks: TaskYaml = schedule::load_yaml_serde(tasks_file);
+
 
 
     // println!("{:?}", tasks["tasks"]["reading"]["type"].as_str().unwrap());
@@ -46,26 +48,26 @@ fn main() {
     // (as below), requesting just the name used, or both at the same time
     if let Some(matches) = matches.subcommand_matches("test") {
         if matches.is_present("debug") {
-            println!("Printing debug info...");
+            println!("TODO Printing debug info...");
         } else {
-            println!("Printing normally...");
+            println!("TODO Printing normally...");
         }
 
-        println!("Running tests...");
+        println!("TODO Running tests...");
     }
 
     if let Some(matches) = matches.subcommand_matches("list") {
         let matches = matches.value_of("TYPE").unwrap_or("all");
         // List different amounts of below data based on verbosity
         // When listing tasks, include number of completions | days since started | last completed | default duration | average duration
-        // list_tasks(&tasks, &matches);
-        match matches {
-            "required" => println!("Listing required tasks..."),
-            "optional" => println!("Listing optional tasks..."),
-            "incompleted" => println!("Listing incompleted tasks..."),
-            "completed" => println!("Listing completed tasks..."),
-            "all" | _ => println!("Listing all tasks..."),
-        }
+        list_tasks(&tasks.tasks, &matches);
+        // match matches {
+        //     "required" => println!("Listing required tasks..."),
+        //     "optional" => println!("Listing optional tasks..."),
+        //     "unstarted" => println!("Listing unstarted tasks..."),
+        //     "started" => println!("Listing started tasks..."),
+        //     "all" | _ => println!("Listing all tasks..."),
+        // }
     } else if let Some(matches) = matches.subcommand_matches("add") {
         let task = matches.value_of("TASK").unwrap();
         // When listing tasks, include number of completions | days since started | last completed
@@ -103,9 +105,9 @@ fn main() {
         let matches = matches.value_of("TYPE").unwrap_or("any");
         // When listing tasks, include number of completions | days since started | last completed
         match matches {
-            "required" => println!("Choosing a required task..."),
-            "optional" => println!("Choosing an optional task..."),
-            "all" | _ => println!("Choosing a task..."),
+            "required" => println!("TODO Choosing a required task..."),
+            "optional" => println!("TODO Choosing an optional task..."),
+            "all" | _ => println!("TODO Choosing a task..."),
         }
     }
 }

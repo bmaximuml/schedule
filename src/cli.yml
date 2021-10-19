@@ -27,8 +27,8 @@ subcommands:
                 possible_values:
                     - required
                     - optional
-                    - completed
-                    - incompleted
+                    - started
+                    - unstarted
                     - all
                 default_value: all
     - add:

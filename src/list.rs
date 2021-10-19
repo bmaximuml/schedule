@@ -5,69 +5,56 @@ extern crate chrono;
 use chrono::Local;
 
 fn print_task(name: &String, task: &Task) {
-    println!("| {0: <12} | {1: <8} | {2: <8} |", name, task.duration, if task.required {"required"} else {"optional"});
+    println!(
+        "| {0: <12} | {1: <11} | {2: <8} | {3: <8} | {4: <11} |", name, task.status, task.duration, 
+        if task.required {"required"} else {"optional"}, task.occurrences.len()
+    );
 }
 
-fn list_required(name: &String, task: &Task) {
+fn if_task_required(name: &String, task: &Task) {
+    // Print task if task is required
     if task.required {
         print_task(name, task);
     }
 }
 
-fn list_optional(name: &String, task: &Task) {
+fn if_task_optional(name: &String, task: &Task) {
+    // Print task if task is optional
     if !task.required {
         print_task(name, task);
     }
 }
 
-fn list_completed(name: &String, task: &Task) {
-    // get highest timestamp => highest_timestamp
-    let mut highest_timestamp: i64 = 0;
-    for completed_task in &task.completed {
-        if completed_task.timestamp > highest_timestamp {
-            highest_timestamp = completed_task.timestamp;
-        }
-    }
-
-    // get timestamp for midnight this morning => today_timestamp
-    let today_timestamp: i64 = Local::today().and_hms(0, 0, 0).timestamp();
-
-    // print task if highest_timestamp >= today_timestamp
-    if highest_timestamp >= today_timestamp {
+fn if_task_started(name: &String, task: &Task) {
+    // Print task if task is started
+    if task.occurrences.len() > 0 {
         print_task(name, task);
     }
 }
 
-fn list_incompleted(name: &String, task: &Task) {
-    // get highest timestamp => highest_timestamp
-    let mut highest_timestamp: i64 = 0;
-    for completed_task in &task.completed {
-        if completed_task.timestamp > highest_timestamp {
-            highest_timestamp = completed_task.timestamp;
-        }
-    }
-
-    // get timestamp for midnight this morning => today_timestamp
-    let today_timestamp: i64 = Local::today().and_hms(0, 0, 0).timestamp();
-
-    // print task if highest_timestamp < today_timestamp
-    if highest_timestamp < today_timestamp {
+fn if_task_unstarted(name: &String, task: &Task) {
+    // Print task if task is unstarted
+    if task.occurrences.len() == 0 {
         print_task(name, task);
     }
 }
 
 pub fn list_tasks(tasks: &HashMap<String, Task>, task_type: &str) {
     println!(
-        "| {0: <12} | {1: <8} | {2: <8} |",
-        "name", "duration", "type"
+        "| {0: <12} | {1: <11} | {2: <8} | {3: <8} | {4: <11} |",
+        "name", "status", "duration", "type", "occurrences"
     );
-    println!("task_type: {}", task_type);
+    println!(
+        "| {0: <12} | {1: <11} | {2: <8} | {3: <8} | {4: <11} |",
+        "====", "======", "========", "====", "==========="
+    );
+    // println!("task_type: {}", task_type);
     for (name, task) in tasks {
         match task_type {
-            "required" => list_required(name, task),
-            "optional" => list_optional(name, task),
-            "completed" => list_completed(name, task),
-            "incompleted" => list_incompleted(name, task),
+            "required" => if_task_required(name, task),
+            "optional" => if_task_optional(name, task),
+            "started" => if_task_started(name, task),
+            "unstarted" => if_task_unstarted(name, task),
             "all" | _ => print_task(name, task),
         }
     }

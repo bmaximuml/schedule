@@ -8,7 +8,7 @@ use yaml_rust::{YamlLoader, Yaml};
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct TaskCompleted {
+pub struct TaskOccurrence {
     pub timestamp: i64,
     pub duration: i64,
 }
@@ -17,7 +17,8 @@ pub struct TaskCompleted {
 pub struct Task {
     pub duration: i64,
     pub required: bool, // true for required, false for optional
-    pub completed: Vec<TaskCompleted>,
+    pub status: String,
+    pub occurrences: Vec<TaskOccurrence>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -37,56 +38,62 @@ fn load_yaml(file: &str) -> Vec<Yaml> {
     }
 }
 
-pub fn load_tasks(file: &str) -> HashMap<String, Task> {
-    let mut all_tasks: HashMap<String, Task> = HashMap::new();
+// pub fn load_tasks(file: &str) -> HashMap<String, Task> {
+//     let mut all_tasks: HashMap<String, Task> = HashMap::new();
 
-    let yaml = &load_yaml(file)[0];
+//     let yaml = &load_yaml(file)[0];
 
-    let yaml = yaml.as_hash().unwrap().values().next().unwrap().as_hash().unwrap();
-    for (name, task) in yaml {
-        let mut task_completed: Vec<TaskCompleted> = Vec::new();
-        let t_type = task.as_hash().unwrap().get(&YamlLoader::load_from_str("type").unwrap()[0]).unwrap().as_str().unwrap();
-        let duration = task.as_hash().unwrap().get(&YamlLoader::load_from_str("duration").unwrap()[0]).unwrap().as_i64().unwrap();
-        let completed = task.as_hash().unwrap().get(&YamlLoader::load_from_str("completed").unwrap()[0]);
-        let name = name.as_str().unwrap();
-        // println!("{}:", name);
-        // println!("    type: {}", t_type);
-        // println!("    duration: {}", duration.to_string());
-        if let Some(completed) = completed {
-            let completed = completed.as_vec().unwrap();
-            // println!("    completed tasks:");
-            for completed_task in completed {
-                let timestamp: i64 = completed_task.as_hash().unwrap().get(&YamlLoader::load_from_str("timestamp").unwrap()[0]).unwrap().as_i64().unwrap();
-                let duration: i64 = completed_task.as_hash().unwrap().get(&YamlLoader::load_from_str("duration").unwrap()[0]).unwrap().as_i64().unwrap();
-                // println!("        timestamp: {:#?}", timestamp);
-                // println!("        duration: {:#?}", duration);
-                task_completed.push(
-                    TaskCompleted {
-                        timestamp,
-                        duration,
-                    }
-                )
-            }
-        }
-        all_tasks.insert(
-            String::from(name),
-            Task {
-                duration,
-                required: t_type == "required",
-                completed: task_completed,
-            },
-        );
-    }
+//     let yaml = yaml.as_hash().unwrap().values().next().unwrap().as_hash().unwrap();
+//     for (name, task) in yaml {
+//         let mut task_occurrence: Vec<TaskOccurrence> = Vec::new();
+//         let t_type = task.as_hash().unwrap().get(&YamlLoader::load_from_str("type").unwrap()[0]).unwrap().as_str().unwrap();
+//         let duration = task.as_hash().unwrap().get(&YamlLoader::load_from_str("duration").unwrap()[0]).unwrap().as_i64().unwrap();
+//         let occurrence = task.as_hash().unwrap().get(&YamlLoader::load_from_str("occurrence").unwrap()[0]);
+//         let status = task.as_hash().unwrap().get(&YamlLoader::load_from_str("status").unwrap()[0]);
+//         let name = name.as_str().unwrap();
+//         // println!("{}:", name);
+//         // println!("    type: {}", t_type);
+//         // println!("    duration: {}", duration.to_string());
+//         if let Some(occurrence) = occurrence {
+//             let occurrence = occurrence.as_vec().unwrap();
+//             // println!("    occurrence tasks:");
+//             for occurrence_task in occurrence {
+//                 let timestamp: i64 = occurrence_task.as_hash().unwrap().get(&YamlLoader::load_from_str("timestamp").unwrap()[0]).unwrap().as_i64().unwrap();
+//                 let duration: i64 = occurrence_task.as_hash().unwrap().get(&YamlLoader::load_from_str("duration").unwrap()[0]).unwrap().as_i64().unwrap();
+//                 // println!("        timestamp: {:#?}", timestamp);
+//                 // println!("        duration: {:#?}", duration);
+//                 task_occurrence.push(
+//                     TaskOccurrence {
+//                         timestamp,
+//                         duration,
+//                     }
+//                 )
+//             }
+//         }
+//         all_tasks.insert(
+//             String::from(name),
+//             Task {
+//                 duration,
+//                 status,
+//                 required: t_type == "required",
+//                 occurrences: task_occurrence,
+//             },
+//         );
+//     }
 
-    all_tasks
-}
+//     all_tasks
+// }
 
-pub fn load_yaml_serde(file: &str) {
+pub fn load_yaml_serde(file: &str) -> TaskYaml {
     let yaml_str = match fs::read_to_string(file) {
         Ok(data) => data,
-        Err(_) => panic!("Unable to read file: {}", &file),
+        Err(error) => panic!("Unable to read file: {} : {:?}", &file, error),
     };
 
-    let deserialized_map: TaskYaml = serde_yaml::from_str(&yaml_str).unwrap();
-    println!("{:#?}", deserialized_map);
+    let deserialized_map: TaskYaml = match serde_yaml::from_str(&yaml_str) {
+        Ok(data) => data,
+        Err(error) => panic!("Unable to serde_yaml: {} : {:?}", &yaml_str, error)
+    };
+    // println!("{:#?}", deserialized_map);
+    deserialized_map
 }
